@@ -1,0 +1,183 @@
+/* One accent, one hairline, and a lot of air. */
+
+Screen {
+    background: $background;
+    align-horizontal: center;
+}
+
+#shell {
+    width: 88;
+    max-width: 100%;
+    height: 100%;
+    padding: 1 2 0 2;
+}
+
+/* --- chrome ---------------------------------------------------------- */
+
+#topbar {
+    height: 2;
+    border-bottom: hkey $panel;
+    margin-bottom: 1;
+}
+#brand { width: 1fr; height: 1; }
+#live { width: auto; height: 1; text-align: right; }
+
+#hints {
+    height: 2;
+    border-top: hkey $panel;
+    margin-bottom: 1;
+    color: $text-muted;
+}
+
+/* --- body ------------------------------------------------------------ */
+
+#body {
+    height: 1fr;
+    scrollbar-size: 1 1;
+    scrollbar-background: $background;
+    scrollbar-background-hover: $background;
+    scrollbar-background-active: $background;
+    scrollbar-color: $panel;
+    scrollbar-color-hover: $text-disabled;
+    scrollbar-color-active: $primary;
+}
+
+#preview {
+    height: 9;
+    padding: 0 2;
+    border: round $panel;
+    border-title-align: left;
+    border-title-color: $text-disabled;
+    margin-bottom: 1;
+}
+
+.section {
+    height: 1;
+    color: $text-disabled;
+    margin: 1 0 0 0;
+    padding-left: 1;
+}
+
+/* --- rows ------------------------------------------------------------ */
+
+.row {
+    height: 1;
+    padding-left: 1;
+}
+/* the focus bar replaces the left padding, so nothing shifts */
+.row:focus, .row.editing {
+    background: $boost;
+    border-left: thick $primary;
+    padding-left: 0;
+}
+.row:focus > .row-key, .row.editing > .row-key {
+    color: $primary;
+    text-style: bold;
+}
+
+.row-key {
+    width: 15;
+    height: 1;
+    color: $text-muted;
+}
+.row-value {
+    width: 1fr;
+    height: 1;
+    text-overflow: ellipsis;
+}
+.row-mark {
+    width: auto;
+    height: 1;
+    padding: 0 1 0 2;
+}
+
+/* the Input only exists while a row is being edited */
+.row-input {
+    display: none;
+    width: 1fr;
+    height: 1;
+    border: none;
+    padding: 0;
+    background: transparent;
+    color: $foreground;
+}
+.row.editing > .row-value { display: none; }
+.row.editing > .row-input { display: block; }
+
+/* --- overlays -------------------------------------------------------- */
+
+ModalScreen {
+    background: $background 60%;
+    align: center middle;
+}
+
+#picker, #prompt, #confirm, #keysheet {
+    width: 62;
+    max-width: 90%;
+    background: $surface;
+    border: round $primary;
+    border-title-align: left;
+    border-title-color: $primary;
+    padding: 1 2;
+}
+
+#picker { height: auto; max-height: 80%; }
+#picker-list {
+    height: auto;
+    max-height: 12;
+    background: transparent;
+    border: none;
+    padding: 0;
+    scrollbar-size: 1 1;
+    scrollbar-background: $surface;
+    scrollbar-color: $panel;
+}
+#picker-list > .option-list--option {
+    padding: 0 1;
+}
+#picker-list > .option-list--option-highlighted {
+    background: $boost;
+    color: $primary;
+    text-style: bold;
+}
+#picker-prompt {
+    height: 1;
+    margin-top: 1;
+}
+.prompt-icon {
+    width: 2;
+    height: 1;
+    color: $primary;
+}
+#picker-input, #prompt-input {
+    width: 1fr;
+    height: 1;
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+#prompt { height: auto; }
+.prompt-line { height: 1; }
+
+#confirm { height: auto; }
+.confirm-question { height: auto; color: $foreground; }
+.confirm-keys { height: 1; margin-top: 1; }
+
+#keysheet { height: auto; max-height: 90%; }
+#keysheet .section { margin: 1 0 0 0; padding-left: 0; }
+#keysheet > .section:first-of-type { margin-top: 0; }
+.keyrow { height: 1; }
+
+/* --- notifications --------------------------------------------------- */
+
+Toast {
+    background: $surface;
+    border: round $panel;
+    padding: 0 1;
+    width: 44;
+}
+Toast.-information { border: round $panel; }
+Toast.-error { border: round $error; }
+Toast.-warning { border: round $warning; }
+ToastRack { align: right bottom; }

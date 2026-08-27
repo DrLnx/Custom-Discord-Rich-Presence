@@ -1,0 +1,101 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  binaries:
+    name: binary · ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04       # oldest supported glibc, for portability
+            asset: drpc-linux-x86_64
+            built: dist/drpc
+          - os: windows-latest
+            asset: drpc-windows-x86_64.exe
+            built: dist/drpc.exe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[build]"
+      - run: pyinstaller --clean --noconfirm drpc.spec
+
+      - name: the binary starts and knows its own version
+        run: |
+          ${{ matrix.built }} --version
+          ${{ matrix.built }} path
+        shell: bash
+
+      - name: name it for the release
+        run: mv "${{ matrix.built }}" "${{ matrix.asset }}"
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+          if-no-files-found: error
+
+  distributions:
+    name: sdist + wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+          if-no-files-found: error
+
+  pypi:
+    name: publish to PyPI
+    needs: [binaries, distributions]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: pypi
+    permissions:
+      id-token: write          # trusted publishing, no API token to store
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github_release:
+    name: publish the GitHub release
+    needs: [binaries, distributions]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/drpc-linux-x86_64
+            artifacts/drpc-windows-x86_64.exe
+            artifacts/*.whl
+            artifacts/*.tar.gz
+          generate_release_notes: true
+          draft: true          # a human presses publish

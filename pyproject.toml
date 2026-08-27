@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "discord-rpc-cli"
+version = "1.0.0"
+description = "Discord Rich Presence from the terminal, with a TUI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "N3XT Agency", email = "business@n3xt-agency.com" }]
+keywords = ["discord", "rich-presence", "rpc", "cli", "tui", "textual"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Chat",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "pypresence>=4.3",
+    "platformdirs>=3.0",
+    "rich>=13.0",
+    "textual>=0.80",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-asyncio>=0.23", "ruff>=0.6", "textual-dev>=1.5"]
+build = ["pyinstaller>=6.6"]
+
+[project.scripts]
+drpc = "drpc.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/n3xt-agency/drpc"
+Issues = "https://github.com/n3xt-agency/drpc/issues"
+Changelog = "https://github.com/n3xt-agency/drpc/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/drpc"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/drpc", "README.md", "LICENSE", "tests"]
+
+[tool.ruff]
+line-length = 96
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["slow: spawns a real background process"]
