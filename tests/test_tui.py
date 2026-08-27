@@ -172,3 +172,20 @@ async def test_the_theme_toggle_flips_and_is_remembered_in_the_config(app):
         await pilot.press("T")
         assert app.theme != first
         assert app.cfg["theme"] == app.theme
+
+
+async def test_a_freshly_loaded_form_is_not_dirty(app):
+    """Row change messages land after load_profile returns; they must not count."""
+    async with app.run_test() as pilot:
+        await pilot.pause()
+        await pilot.pause()
+        assert app.dirty is False
+
+
+async def test_switching_profile_does_leave_the_form_dirty(app):
+    async with app.run_test() as pilot:
+        await pilot.pause()
+        app._switch_profile("music")
+        await pilot.pause()
+        await pilot.pause()
+        assert app.dirty is True

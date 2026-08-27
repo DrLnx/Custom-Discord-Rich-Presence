@@ -144,7 +144,7 @@ class DrpcApp(App):
     def row(self, key: str) -> Row:
         return self.query_one(f"#r-{key}", Row)
 
-    def load_profile(self) -> None:
+    def load_profile(self, dirty_after: bool = False) -> None:
         self.loading = True
         profile = self.profile
         for key, _, _ in IDENTITY + TEXT + ASSETS:
@@ -164,9 +164,16 @@ class DrpcApp(App):
             self.row(key).mark = (
                 "[$text-disabled]unchecked[/]" if self.row(key).value else ""
             )
-        self.loading = False
-        self.dirty = False
+        # Rows announce their new values by message, so those arrive after this
+        # returns. Clear the flag once the queue has drained, or loading a
+        # profile would leave the form looking edited.
+        self.call_after_refresh(self._finish_load, dirty_after)
         self.update_preview()
+        self.tick()
+
+    def _finish_load(self, dirty_after: bool) -> None:
+        self.loading = False
+        self.dirty = dirty_after
         self.tick()
 
     def collect(self) -> None:
@@ -217,7 +224,7 @@ class DrpcApp(App):
         text += [""] * (3 - len(text))
 
         lines = [f"[$text-disabled]{ACTIVITY_HEADERS.get(activity, 'PLAYING A GAME')}[/]", ""]
-        lines += [f"{art_line}  {body}" for art_line, body in zip(art, text)]
+        lines += [f"{art_line}  {body}" for art_line, body in zip(art, text, strict=True)]
 
         pills = []
         for index in (0, 1):
@@ -340,8 +347,7 @@ class DrpcApp(App):
             return
         self.collect()  # keep edits made before switching away
         self.profile_name = name
-        self.load_profile()
-        self.dirty = True
+        self.load_profile(dirty_after=True)
 
     def action_new_profile(self) -> None:
         self.push_screen(Prompt("new profile", "name"), self._create_profile)
@@ -355,8 +361,7 @@ class DrpcApp(App):
         self.collect()
         self.cfg["profiles"][name] = json.loads(json.dumps(self.profile))
         self.profile_name = name
-        self.load_profile()
-        self.dirty = True
+        self.load_profile(dirty_after=True)
         self.notify(f"created {name}")
 
     def action_delete_profile(self) -> None:
@@ -374,8 +379,7 @@ class DrpcApp(App):
         self.profile_name = next(iter(self.cfg["profiles"]))
         if self.cfg.get("active") == name:
             self.cfg["active"] = self.profile_name
-        self.load_profile()
-        self.dirty = True
+        self.load_profile(dirty_after=True)
         self.notify(f"deleted {name}")
 
     # -- image checking ---------------------------------------------------
