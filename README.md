@@ -1,9 +1,25 @@
+<div align="center">
+
 # drpc
 
-Discord Rich Presence from the terminal — a background daemon, a small CLI,
-and a TUI for the parts that are easier to see than to type.
+**Discord Rich Presence from the terminal.**
 
-Runs on **Linux** and **Windows**.
+A background daemon, a small CLI, and a TUI for the parts that are
+easier to see than to type.
+
+[![release](https://img.shields.io/github/v/release/DrLnx/Custom-Discord-Rich-Presence?include_prereleases&sort=semver&color=5865F2&label=release)](https://github.com/DrLnx/Custom-Discord-Rich-Presence/releases)
+[![python](https://img.shields.io/badge/python-3.10%2B-3776AB)](https://www.python.org/)
+[![platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-444)](#where-things-live)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+[Install](#install) · [Quick start](#quick-start) · [The UI](#the-ui) · [Commands](#commands) · [Profiles](#profiles)
+
+</div>
+
+> [!NOTE]
+> **This is an alpha.** It works, and it is in daily use — but the config
+> format and the CLI surface can still move before `1.0`. Pin a tag if that
+> matters to you.
 
 ```
  ● drpc  vscode                          ● live · 02:14:07 · vscode
@@ -33,16 +49,9 @@ Runs on **Linux** and **Windows**.
 
 ## Install
 
-**With pipx or uv** (needs Python 3.10+). Until the first stable release the
-package is installed from git rather than PyPI:
+### Standalone binary
 
-```bash
-pipx install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
-# or: uv tool install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
-```
-
-**Standalone binary** — no Python required. Grab `drpc-linux-x86_64` or
-`drpc-windows-x86_64.exe` from the [latest release][releases].
+No Python required. One file, nothing to uninstall.
 
 ```bash
 # Linux
@@ -51,7 +60,19 @@ curl -L -o ~/.local/bin/drpc \
 chmod +x ~/.local/bin/drpc
 ```
 
-On Windows, drop `drpc.exe` anywhere on your `PATH`.
+On Windows, grab `drpc-windows-x86_64.exe` from the [latest release][releases],
+rename it to `drpc.exe`, and drop it anywhere on your `PATH`.
+
+### With pipx or uv
+
+Needs Python 3.10+. Until the first stable release the package installs from
+git rather than PyPI:
+
+```bash
+pipx install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
+# or
+uv tool install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
+```
 
 [releases]: https://github.com/DrLnx/Custom-Discord-Rich-Presence/releases/latest
 
@@ -141,9 +162,10 @@ A profile is one presence. Switch between them with `drpc use` or `p` in the UI.
 
 ## Images that actually render
 
-Discord fetches image URLs server-side, through `media.discordapp.net`. A URL
-that loads fine in your browser can still come back blank — hosts that block
-hotlinking, SVGs, and Google Images result pages all fail this way, silently.
+> [!IMPORTANT]
+> Discord fetches image URLs server-side, through `media.discordapp.net`. A URL
+> that loads fine in your browser can still come back blank — hosts that block
+> hotlinking, SVGs, and Google Images result pages all fail this way, silently.
 
 `drpc check` (and `c` in the UI) hands the URL to Discord, takes the proxy
 link back, and tries to pull the image through it. That is the only answer
@@ -176,13 +198,17 @@ does not need to be running first — drpc waits and connects when it appears.
 ## Development
 
 ```bash
-git clone https://github.com/DrLnx/Custom-Discord-Rich-Presence && cd Custom-Discord-Rich-Presence
+git clone https://github.com/DrLnx/Custom-Discord-Rich-Presence
+cd Custom-Discord-Rich-Presence
 python -m venv .venv && .venv/bin/pip install -e '.[dev]'
+
 .venv/bin/pytest
 .venv/bin/ruff check .
 .venv/bin/textual run --dev drpc.tui.app:DrpcApp   # live CSS reload
 ```
 
+Releases are cut from a tag — see [RELEASING.md](RELEASING.md).
+
 ## License
 
-MIT
+[MIT](LICENSE) © N3XT Agency
