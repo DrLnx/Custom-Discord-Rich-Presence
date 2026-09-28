@@ -44,6 +44,14 @@ def session() -> dict[str, Any]:
         return {}
 
 
+def sane_start(started_at: int) -> int:
+    """A start stamp from the future means the clock moved back (NTP, a timezone
+    fix) since it was taken; anchor to now so the timer counts instead of sitting
+    at zero until wall-clock catches up."""
+    now = int(time.time())
+    return min(int(started_at), now)
+
+
 def elapsed() -> int | None:
     started = session().get("started_at")
     if not started or status() is None:
@@ -62,6 +70,7 @@ def serve(profile_name: str | None, started_at: int) -> None:
     if not lock.acquire():
         raise Fail(f"already running (pid {status()})")
 
+    started_at = sane_start(started_at)
     cfg = load()
     name, profile = get_profile(cfg, profile_name)
     SESSION.write_text(
@@ -136,7 +145,7 @@ def start(profile_name: str | None = None, started_at: int | None = None) -> int
         raise Fail(f"profile {name!r} has no client_id set")
     presence.build_payload(profile)  # fail here, not silently in the background
 
-    started_at = started_at or int(time.time())
+    started_at = sane_start(started_at or int(time.time()))
     _spawn(name, started_at)
 
     deadline = time.monotonic() + SPAWN_TIMEOUT
@@ -185,7 +194,7 @@ def restart(
     carried = None
     started_at = None
     if previous and not reset_timer:
-        started_at = int(previous)
+        started_at = sane_start(int(previous))
         carried = max(0, int(time.time()) - started_at)
     return start(profile_name, started_at), carried
 
