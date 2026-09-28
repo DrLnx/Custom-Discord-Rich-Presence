@@ -33,10 +33,12 @@ Runs on **Linux** and **Windows**.
 
 ## Install
 
-**With pipx or uv** (needs Python 3.9+):
+**With pipx or uv** (needs Python 3.10+). Until the first stable release the
+package is installed from git rather than PyPI:
 
 ```bash
-pipx install discord-rpc-cli     # or: uv tool install discord-rpc-cli
+pipx install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
+# or: uv tool install git+https://github.com/DrLnx/Custom-Discord-Rich-Presence
 ```
 
 **Standalone binary** — no Python required. Grab `drpc-linux-x86_64` or
@@ -45,13 +47,13 @@ pipx install discord-rpc-cli     # or: uv tool install discord-rpc-cli
 ```bash
 # Linux
 curl -L -o ~/.local/bin/drpc \
-  https://github.com/n3xt-agency/drpc/releases/latest/download/drpc-linux-x86_64
+  https://github.com/DrLnx/Custom-Discord-Rich-Presence/releases/latest/download/drpc-linux-x86_64
 chmod +x ~/.local/bin/drpc
 ```
 
 On Windows, drop `drpc.exe` anywhere on your `PATH`.
 
-[releases]: https://github.com/n3xt-agency/drpc/releases/latest
+[releases]: https://github.com/DrLnx/Custom-Discord-Rich-Presence/releases/latest
 
 ## Quick start
 
@@ -174,7 +176,7 @@ does not need to be running first — drpc waits and connects when it appears.
 ## Development
 
 ```bash
-git clone https://github.com/n3xt-agency/drpc && cd drpc
+git clone https://github.com/DrLnx/Custom-Discord-Rich-Presence && cd Custom-Discord-Rich-Presence
 python -m venv .venv && .venv/bin/pip install -e '.[dev]'
 .venv/bin/pytest
 .venv/bin/ruff check .

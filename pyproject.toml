@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "discord-rpc-cli"
-version = "1.0.0"
+version = "0.1.0a1"
 description = "Discord Rich Presence from the terminal, with a TUI."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,7 +12,7 @@ license = "MIT"
 authors = [{ name = "N3XT Agency", email = "business@n3xt-agency.com" }]
 keywords = ["discord", "rich-presence", "rpc", "cli", "tui", "textual"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
@@ -41,9 +41,9 @@ build = ["pyinstaller>=6.6"]
 drpc = "drpc.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/n3xt-agency/drpc"
-Issues = "https://github.com/n3xt-agency/drpc/issues"
-Changelog = "https://github.com/n3xt-agency/drpc/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/DrLnx/Custom-Discord-Rich-Presence"
+Issues = "https://github.com/DrLnx/Custom-Discord-Rich-Presence/issues"
+Changelog = "https://github.com/DrLnx/Custom-Discord-Rich-Presence/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/drpc"]

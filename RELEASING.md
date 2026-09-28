@@ -6,7 +6,7 @@ Everything is automated from a tag. The two one-time setups are below.
 
 ```bash
 gh auth login
-gh repo create n3xt-agency/drpc --public --source=. --push
+gh repo create DrLnx/Custom-Discord-Rich-Presence --public --source=. --push
 ```
 
 If the repo lives somewhere else, update the three `[project.urls]` entries in
@@ -19,8 +19,8 @@ No API token is stored anywhere — PyPI verifies the workflow's OIDC identity.
 1. Create the project owner account on <https://pypi.org>.
 2. Go to **Your projects → Publishing → Add a new pending publisher** and enter:
    - PyPI project name: `discord-rpc-cli`
-   - Owner: `n3xt-agency`
-   - Repository: `drpc`
+   - Owner: `DrLnx`
+   - Repository: `Custom-Discord-Rich-Presence`
    - Workflow name: `release.yml`
    - Environment name: `pypi`
 3. In the GitHub repo, create an environment named `pypi`
@@ -62,3 +62,12 @@ python -m build && twine check dist/*
 
 `workflow_dispatch` also runs the binary and distribution jobs on demand; the
 publish steps are gated on a `v*` tag, so a manual run only produces artifacts.
+
+## Prereleases
+
+A tag with a hyphen in it — `v0.1.0-alpha.1`, `v1.0.0-rc.1` — skips the PyPI
+job and stops at the draft GitHub release with the binaries attached. Only a
+final tag such as `v1.0.0` publishes to PyPI.
+
+Keep the two version strings in PEP 440 form, which drops the hyphen:
+`v0.1.0-alpha.1` is `0.1.0a1`, `v1.0.0-rc.1` is `1.0.0rc1`.

@@ -14,7 +14,7 @@ from . import autostart, config, daemon, images, ui
 from .errors import Fail
 from .paths import CONFIG, LOG, PID, WINDOWS
 
-__version__ = "1.0.0"
+__version__ = "0.1.0a1"
 
 
 # --- daemon ----------------------------------------------------------------
